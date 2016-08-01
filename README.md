@@ -212,3 +212,33 @@ game.prototype.gameStart = () => {
 };
 (new game).init();
 </code></pre>
+#11、中介者模式#
+
+中介者对象可以让各个对象之间不需要显示的相互引用，从而使其耦合松散，而且可以独立的改变他们之前的交互。  
+**Example**
+<pre><code>function duijiangji(name) {
+    this.name = name;
+}
+duijiangji.prototype = {
+    send(msg, object) {
+	people.send(msg, object);
+    },
+    jieshou(msg) {
+	console.log(this.name + "接收到：" + msg);
+    }
+};
+var people = {
+    all : {},
+    create(object) {
+	this.all[object.name] = object;
+    },
+    send(msg, object) {
+	this.all[object.name].jieshou(msg);
+    }
+};
+var ren1 = new duijiangji("小四"),
+    ren2 = new duijiangji("小七");
+people.create(ren1);
+people.create(ren2);
+ren1.send("我看见你了", ren2);
+</code></pre>
