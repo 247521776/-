@@ -242,3 +242,206 @@ people.create(ren1);
 people.create(ren2);
 ren1.send("我看见你了", ren2);
 </code></pre>
+#12、迭代器模式#
+
+迭代器模式提供一种方法顺序访问一个聚合对象中各个元素，而又不需要暴露该方法中的内部表示。  
+**Example**
+<pre><code>function Iterator(arr) {
+    this.iterator = arr;
+    this.length = 1;
+    this.index = 0;
+    if(arr instanceof Array){
+	this.length = arr.length;
+    } else {
+	for(var key in arr) {
+	    this.length++;
+	}
+    }
+}
+Iterator.prototype = {
+    first() {
+	return this.iterator[0];
+    },
+    last() {
+	return this.iterator[this.length - 1];
+    },
+    hasNext() {
+	return this.index < this.length;
+    },
+    next() {
+	var data = this.iterator[this.index];
+	this.index++;
+	return data;
+    }
+};
+
+var iterator = new Iterator([3, 6, 9]);
+var iterator2 = new Iterator({0 : 1, 1 : 2});
+
+console.log(iterator.first());
+console.log(iterator.last());
+console.log(iterator.hasNext());
+console.log(iterator.next());
+</code></pre>
+#13、组合模式#
+
+组合模式又叫部分-整体模式，它将所有对象组合成树形结构，使得用户只需要操作最上层的接口，就可以对所有成员做相同的操作。  
+**Example**
+<pre><code>function company(name) {
+    this.name = name;
+    this.departments = [];
+}
+company.prototype = {
+    constructor : company,
+    addDepartment(dep){
+	this.departments.push(dep);
+	return this;
+    },
+    getDepartments() {
+	return this.departments;
+    }
+}
+function department(name) {
+    this.name = name;
+    this.presons = [];
+}
+department.prototype = {
+    constructor : department,
+    addPerson(person) {
+	this.persons.push(person);
+	return this;
+    },
+    getPersons() {
+	return this.persons;
+    }
+}
+function person(name) {
+    this.name = name;
+}
+person.prototype = {
+    contructor : person,
+    goWork() {
+	console.log(this.name + "赶紧去工作!");
+    },
+    goSleep() {
+	console.log(this.name + "可以休息了!");
+    }
+}
+var companyTest = new company("测试公司"),
+    departmentTest = new department("测试部门"),
+    person = new person("小七");
+departmentTest.addPerson(person);
+companyTest.addDepartment(departmentTest);
+for(var dep of companyTest.getDepartments) {
+    for(var per of dep.getPersons) {
+	if(per.name === "小七") {
+	    per.goSleep();
+	}
+    }
+}
+</code></pre>
+#14、备忘录模式#
+
+备忘录模式在js中经常用于数据缓存。
+**Example**
+<pre><code>var page = function() {
+    var page = 1,
+	cache = {},
+	data;
+    return function(page) {
+	if(cache[page]) {
+	    data = cache[page];
+	    console.log(data);
+	} else {
+	    find('xxxx', (data) => {
+		cache[page] = data;
+		console.log(data);
+	    })
+	}
+    }
+}();
+</code></pre>
+#15、职责链模式#
+
+职责链模式是一个对象A向另一个对象B发起请求，如果B不处理，可以把请求转给C，如果C不处理，又可以吧请求转给D，一直到有一个对象愿意处理这个请求为止。  
+**Example**
+<pre><code>fucntion handle(o, t) {
+    this.object = o || null;
+    this.top = t || 0;
+}
+handle.prototype = {
+    handle() {
+	if(this.object) {
+	    this.object.handle();
+	}
+    },
+    has() {
+	    return this.topic >= 0;
+	}
+};
+
+var app = new handle({
+    handle() {
+	console.log("app handle");
+    }
+});
+var one = new handle(app, 1);
+var two = new handle(one, 2);
+
+two.handle();
+</code></pre>
+#16、享元模式#
+
+享元模式主要用来减少程序所需的对象个数。  
+**Example**
+<pre><code>function Car(make, model, year) {
+    this.make = make;
+    this.model = model;
+    this.year = year;
+}
+Car.prototype = {
+    getMake() {
+	return this.make;
+    },
+    getModel() {
+	return this.model;
+    },
+    getYear() {
+	return this.year;
+    }
+}
+</code></pre>
+#17、状态模式#
+
+状态模式主要可以用于的场景  
+<ol>
+<li>一个对象行为取决于它的状态
+<li>一个操作中含有庞大的条件分支语句
+</ol>
+**Example**
+<pre><code>var stateManager = StateManager();
+stateManager.changeState('jump');
+function StateManager() {
+    var currState = 'wait';
+    var states = {
+	jump(state) {
+	    currState = 'states';
+	},
+	wait() {
+	    currState = 'wait';
+	},
+	attack() {
+	    currState = 'attack';
+	},
+	crouch() {
+	    currState = 'crouch';
+	},
+	defense() {
+	    currState = 'defense';
+	}
+    };
+    var changeState = function(state) {
+	states[state] && states[state]();
+    }
+}
+</code></pre>
