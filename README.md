@@ -158,10 +158,7 @@ setStyle(["a", "b"], {
     if(object instanceof Array) {
 	length = object.length;
     } else {
-	length = 0;
-	for(var property in object){
-	    length++;
-	}
+	length = Obejct.keys(object).length;
     }
     for(var i = 0; i < pushObject.length; i++) {
 	object[i + length] = pushObject[i];
