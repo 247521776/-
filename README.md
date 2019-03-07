@@ -57,9 +57,9 @@ console.log( a.name );
         var _ref;
         return (_ref = obj[key]) != null ? _ref.length = 0 : void 0;
     };
-    trigger = () => {
+    trigger = (...args) => {
         var stack, _ref, key;
-	key = Array.prototype.shift.call(arguments);
+	key = args.shift();
 	stack = (_ref = obj[key]) != null ? _ref : obj[key] = [];
 	for(var fn of stack) {
 	    if(fn.apply(__this, arguments) === false) {
